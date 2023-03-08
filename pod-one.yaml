@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-one
+spec:
+  serviceAccountName: custom
+  containers:
+  - name: webserver
+    image: nginx:1.19.6-alpine
+    ports:
+    - containerPort: 80
