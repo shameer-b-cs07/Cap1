@@ -8,7 +8,7 @@ do
     do
         if ! grep -q "$pod" /tmp/k8s-pods
         then
-            echo "New Static pod created: $pod" | mailx -s "New Static Pod Created" shameerbabukm@gmail.com
+            echo "New Static pod created: $pod" | mailx -s "New Static Pod Created" <EMAIL-ID>
             echo "$pod" >> /tmp/k8s-pods
         fi
     done
