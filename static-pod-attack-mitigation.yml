@@ -1,0 +1,19 @@
+---
+- name: Comment out staticPodPath in kubelet config file
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Comment out the staticPodPath line
+      lineinfile:
+        path: /var/lib/kubelet/config.yaml
+        regexp: "^staticPodPath: /etc/kubernetes/manifests"
+        line: "# {{ item }}"
+      with_items:
+        - "staticPodPath:"
+
+    - name: Restart kubelet
+      systemd:
+        name: kubelet
+        state: restarted
+

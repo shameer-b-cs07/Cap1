@@ -1,0 +1,43 @@
+---
+- name: Update server and upgrade vsftpd package
+  hosts: all
+  become: true
+  
+  tasks:
+    - name: Update package index
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+        security: yes
+
+    - name: Stop vsftpd service
+      service:
+        name: vsftpd
+        state: stopped
+      ignore_errors: true
+
+    - name: Remove vsftpd installed from source
+      shell: "rm -rf /usr/local/etc/vsftpd* /usr/local/sbin/vsftpd /usr/local/src/vsftpd-2.3.4/*"
+      ignore_errors: true
+      register: vsftpd_source
+
+    - name: Uninstall vsftpd RPM package if installed
+      yum:
+        name: vsftpd
+        state: absent
+
+    - name: Install latest vsftpd package
+      yum:
+        name: vsftpd
+        state: latest
+
+    - name: Start vsftpd service
+      service:
+        name: vsftpd
+        state: started
+
